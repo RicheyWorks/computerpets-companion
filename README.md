@@ -1,30 +1,36 @@
 # Companion
 
-**Web Companion** — Mobile-friendly dashboard to manage pets away from the desktop overlay.
+**Keep an eye on your pet away from the desktop.**
 
-Part of [ComputerPets](https://github.com/RicheyWorks/computerpets). Map: [computerpets-ecosystem](https://github.com/RicheyWorks/computerpets-ecosystem).
+A planned mobile-friendly care dashboard showing pet vitals, care actions, and the machine hosting the overlay.
 
-| | |
+**Stage: design scaffold.** This checkout contains a design document and a source placeholder. The experience below is planned; there is no runnable app or integrated service yet.
+
+[Status](#status) · [Planned experience](#planned-experience) · [Contributor quickstart](#contributor-quickstart) · [Service contract](docs/CONTRACT.md) · [Ecosystem map](https://github.com/RicheyWorks/computerpets-ecosystem)
+
+## Status
+
+| Available today | What you can inspect |
 | --- | --- |
-| Status | Design scaffold — contract frozen, implementation next |
-| License | MIT |
-| First pet | Still [Rui on the desktop](https://github.com/RicheyWorks/computerpets/blob/main/docs/START-HERE.md). This organ is optional. |
+| [Service contract](docs/CONTRACT.md) | Intended behavior, boundaries, and planned dependencies. |
+| [Source placeholder](src/companion/index.ts) | Name metadata only; no package.json, app, or runtime is checked in. |
+| [MIT license](LICENSE) | Licensing terms for the repository. |
 
-## The job
+Gameplay, endpoints, integration arrows, and failure handling on this page describe implementation targets. No build/test harness, CI workflow, or product screenshots are included in this scaffold.
 
-The desktop walk is the main quest. Companion is the phone: feed, call-back, medicine, and 'is Rui still on the PC?' when you are on the bus.
+## Planned experience
 
-The flagship overlay already puts a living sticker on the real desktop (Rui first, 210 kinds). Companion does not replace that. It is one organ.
+- GET /me/pets — owned pets + vitals (proxied from flagship)
+- POST /me/pets/{id}/care — feed | play | rest | clean | medicine
+- GET /me/presence — which machine currently hosts the overlay
 
-## Who uses it
+### Planned technology
 
-Players away from the PC. Phone and laptop browser.
+TypeScript · React 19 · Vite · TanStack Query · Spring Boot API client · PWA
 
-## What it is not
+### Planned connections
 
-Not the desktop overlay. You cannot drag Rui on a phone; you can feed and recall.
-
-## Architecture
+These arrows show intended dependencies, rather than working integrations.
 
 ```mermaid
 flowchart LR
@@ -34,81 +40,47 @@ flowchart LR
   companion -->|recall| visitation
 ```
 
-## Stack
+## Contributor quickstart
 
-TypeScript · React 19 · Vite · TanStack Query · Spring Boot API client · PWA
+With access to this private repository, Git and PowerShell are enough to review the scaffold:
 
-GroupId / namespace: `com.enterprisepet.companion`  
-Default listen: `8080`
+```powershell
+git clone https://github.com/RicheyWorks/computerpets-companion.git
+Set-Location computerpets-companion
+Get-Content docs/CONTRACT.md
+Get-Content src/companion/index.ts
+```
 
-## Contract
+Read [Service contract](docs/CONTRACT.md) before choosing implementation details. The commands above inspect the checked-in files; app installation, editor launch, and server startup become possible after a buildable project and entry point are added.
 
-### Data
-
-`PetCard(id, species, vitals, host) · CareAction(kind, ts) · Presence(machineId, lastSeen)`
-
-### Surface
-
-- GET /me/pets — owned pets + vitals (proxied from flagship)
-- POST /me/pets/{id}/care — feed | play | rest | clean | medicine
-- GET /me/presence — which machine currently hosts the overlay
-
-### Failure doctrine
-
-Desktop offline → queue care actions, sync on return. Auth missing → local demo Rui only, never another user's pet.
-
-## First slice
-
-Build this and stop. Do not boil the ocean.
+### First implementation target
 
 **Pet card for Rui: vitals, feed/play/rest/clean/medicine, presence of the host machine.**
 
 You know it works when: Backend down: queue care, do not pretend it landed. No auth: local demo Rui only.
 
-## Environment
+Treat this as an acceptance target for a future implementation. Start with the documented slice, add the required project setup and focused tests, and update these instructions with commands that work from a fresh clone.
 
-`VITE_API_BASE` pointing at the Spring backend
+## Design boundaries
 
-Never commit secrets. Never put Steam or chain keys in the overlay.
+- Stay canon with 210 species. No illegal hybrids. No swapped voices.
+- Treat the desktop overlay as the main quest. This organ is optional until wired.
+- Fail soft: the overlay keeps walking if this service is down, unless this *is* the overlay.
+- No PII in public artifacts (Steam id, wallet, home path, webcam frames).
 
-## Neighbors
+**Required failure behavior:**
 
-- computerpets Spring backend
-- computerpets-quests
-- computerpets-visitation
-- computerpets-telemetry
+Desktop offline → queue care actions, sync on return. Auth missing → local demo Rui only, never another user's pet.
 
-## Layout
+## Ecosystem
 
-```
-computerpets-companion/
-  README.md           this file
-  LICENSE             MIT
-  docs/CONTRACT.md    the same contract, frozen for implementers
-  src/                implementation lands here
-```
+- [computerpets](https://github.com/RicheyWorks/computerpets) Spring backend
+- [computerpets-quests](https://github.com/RicheyWorks/computerpets-quests)
+- [computerpets-visitation](https://github.com/RicheyWorks/computerpets-visitation)
+- [computerpets-telemetry](https://github.com/RicheyWorks/computerpets-telemetry)
 
-## Run (Windows)
-
-PowerShell, from this folder, after the flagship helpers (Git, Node LTS 22+, JDK 21 as needed):
-
-```powershell
-cd app; npm install; npm run dev
-```
-
-You do not need this service to meet Rui. The [flagship start-here](https://github.com/RicheyWorks/computerpets/blob/main/docs/START-HERE.md) is still the first pet.
-
-## Links
-
-- Flagship: [RicheyWorks/computerpets](https://github.com/RicheyWorks/computerpets)
-- This repo: [RicheyWorks/computerpets-companion](https://github.com/RicheyWorks/computerpets-companion)
-- Map: [RicheyWorks/computerpets-ecosystem](https://github.com/RicheyWorks/computerpets-ecosystem)
-- Contract file: [docs/CONTRACT.md](docs/CONTRACT.md)
+Start with the [ComputerPets flagship](https://github.com/RicheyWorks/computerpets) for the desktop pet. This repository describes an optional extension; the [ecosystem map](https://github.com/RicheyWorks/computerpets-ecosystem) explains the broader plan.
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
-
----
-
-*Two hundred ten living kinds. Keep them so a line does not go quiet.*
